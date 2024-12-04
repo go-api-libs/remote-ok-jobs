@@ -1,3 +1,7 @@
+github.com/MarkRosemaker/jsonutil v0.0.0-20241121165235-080e83f11d35 h1:OjSgsfhRilbDgbvsynw7c2foZ3W8v1rlR2EaAWFMU9I=
+github.com/MarkRosemaker/jsonutil v0.0.0-20241121165235-080e83f11d35/go.mod h1:K66rodY4xSRyahsUu9Ekx5DWqY7tYbBG3XAAgahnGN0=
+github.com/go-api-libs/api v0.0.0-20241130015416-83da383db809 h1:EEcHrfS01TLTWkG+uf8HKIQL+zYu/h7cxFKEK2c/eNY=
+github.com/go-api-libs/api v0.0.0-20241130015416-83da383db809/go.mod h1:fL72+M3mBE+eqDE13m+RakrxI4QdIcd44+onfW0SfPw=
 github.com/go-json-experiment/json v0.0.0-20241127185351-9802db03f36a h1:W/o3DbExdFptoPsZlbGsFnm0f8xDce+C0+Y0u54mJo4=
 github.com/go-json-experiment/json v0.0.0-20241127185351-9802db03f36a/go.mod h1:BWmvoE1Xia34f3l/ibJweyhrT+aROb/FQ6d+37F0e2s=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 h1:yhCVgyC4o1eVCa2tZl7eS0r+SDo693bJlVdllGtEeKM=

@@ -19,6 +19,32 @@ go get github.com/go-api-libs/remote-ok-jobs/pkg/remote-ok-jobs
 
 ## Usage
 
+### Example 1: 
+
+```go
+package main
+
+import (
+	"context"
+)
+
+func main() {
+	c, err := remote - ok - jobs.NewClient()
+	if err != nil {
+		panic(err)
+	}
+
+	ctx := context.Background()
+	getAPIOkJSONResponse, err := c.GetAPI(ctx)
+	if err != nil {
+		panic(err)
+	}
+
+	// Use getAPIOkJSONResponse array
+}
+
+```
+
 ## Additional Information
 
 - [**Go Reference**](https://pkg.go.dev/github.com/go-api-libs/remote-ok-jobs/pkg/remote-ok-jobs): The Go reference documentation for the client package.

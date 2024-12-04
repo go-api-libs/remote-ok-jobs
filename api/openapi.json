@@ -7,11 +7,138 @@
   },
   "servers": [
     {
-      "url": "TODO"
+      "url": "https://remoteok.com/"
     }
   ],
   "paths": {
-    "/": {}
+    "/api": {
+      "get": {
+        "operationId": "GetAPI",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/GetAPIOkResponse"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "GetAPIOkJSONResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/GetAPIOkJSONResponseItems"
+        }
+      },
+      "GetAPIOkJSONResponseItems": {
+        "type": "object",
+        "properties": {
+          "last_updated": {
+            "type": "integer",
+            "example": 1733346004
+          },
+          "legal": {
+            "type": "string",
+            "example": "API Terms of Service: Please link back (with follow, and without nofollow!) to the URL on Remote OK and mention Remote OK as a source, so we get traffic back from your site. If you do not we'll have to suspend API access.\n\nPlease don't use the Remote OK logo without written permission as it's a registered trademark, please DO use our name Remote OK though."
+          },
+          "slug": {
+            "type": "string",
+            "example": "remote-senior-backend-golang-engineer-mailgun-send-mailgun-1059249"
+          },
+          "id": {
+            "type": "string",
+            "example": "1059249"
+          },
+          "epoch": {
+            "type": "integer",
+            "example": 1733260504
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-12-03T21:15:04+00:00"
+          },
+          "company": {
+            "type": "string",
+            "example": "Mailgun"
+          },
+          "company_logo": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://remoteok.com/assets/img/jobs/a33f588b65a1bc402fa0bff83cb389631733259610.png"
+          },
+          "position": {
+            "type": "string",
+            "example": "Senior Backend Golang Engineer Mailgun Send"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "golang"
+            }
+          },
+          "description": {
+            "type": "string",
+            "example": "Remote - The Mailgun Sending Pipeline team at Sinch is responsible for a sophisticated and robust email delivery platform that delivers well over 1 billion emails daily to people all around the globe! With scalability, stability, and throughput at the forefront of priorities, th...<br/><br/>Please mention the word **AMELIORATE** and tag RMzguNjguMTM0LjE5NA== when applying to show you read the job post completely (#RMzguNjguMTM0LjE5NA==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human."
+          },
+          "location": {
+            "type": "string"
+          },
+          "salary_min": {
+            "type": "integer",
+            "example": 70000
+          },
+          "salary_max": {
+            "type": "integer",
+            "example": 110000
+          },
+          "apply_url": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://remoteOK.com/remote-jobs/remote-senior-backend-golang-engineer-mailgun-send-mailgun-1059249"
+          },
+          "logo": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://remoteok.com/assets/img/jobs/a33f588b65a1bc402fa0bff83cb389631733259610.png"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://remoteOK.com/remote-jobs/remote-senior-backend-golang-engineer-mailgun-send-mailgun-1059249"
+          },
+          "original": {
+            "type": "boolean",
+            "example": true
+          },
+          "verified": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "last_updated",
+          "legal"
+        ],
+        "example": {
+          "last_updated": 1733346004,
+          "legal": "API Terms of Service: Please link back (with follow, and without nofollow!) to the URL on Remote OK and mention Remote OK as a source, so we get traffic back from your site. If you do not we'll have to suspend API access.\n\nPlease don't use the Remote OK logo without written permission as it's a registered trademark, please DO use our name Remote OK though."
+        }
+      }
+    },
+    "responses": {
+      "GetAPIOkResponse": {
+        "description": "TODO",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GetAPIOkJSONResponse"
+            }
+          }
+        }
+      }
+    }
   },
   "externalDocs": {
     "description": "API documentation",

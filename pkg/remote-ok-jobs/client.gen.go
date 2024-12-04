@@ -5,20 +5,25 @@
 package remoteokjobs
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 
+	"github.com/MarkRosemaker/jsonutil"
+	"github.com/go-api-libs/api"
 	"github.com/go-json-experiment/json"
 )
 
 var (
 	baseURL = &url.URL{
-		Host:   "",
-		Path:   "TODO",
-		Scheme: "",
+		Host:   "remoteok.com",
+		Path:   "/",
+		Scheme: "https",
 	}
 
-	jsonOpts = json.JoinOptions()
+	jsonOpts = json.JoinOptions(
+		json.WithMarshalers(json.MarshalFuncV2(jsonutil.URLMarshal)),
+		json.WithUnmarshalers(json.UnmarshalFuncV2(jsonutil.URLUnmarshal)))
 )
 
 // Client conforms to the OpenAPI3 specification for this service.
@@ -30,4 +35,52 @@ type Client struct {
 // NewClient creates a new Client.
 func NewClient() (*Client, error) {
 	return &Client{cli: http.DefaultClient}, nil
+}
+
+// GetAPI defines an operation.
+//
+//	GET /api
+func (c *Client) GetAPI(ctx context.Context) (GetAPIOkJSONResponse, error) {
+	return GetAPI[GetAPIOkJSONResponse](ctx, c)
+}
+
+// GetAPI defines an operation.
+// You can define a custom result to unmarshal the response into.
+//
+//	GET /api
+func GetAPI[R any](ctx context.Context, c *Client) (R, error) {
+	u := baseURL.JoinPath("/api")
+	req := (&http.Request{
+		Header:     http.Header{},
+		Host:       u.Host,
+		Method:     http.MethodGet,
+		Proto:      "HTTP/1.1",
+		ProtoMajor: 1,
+		ProtoMinor: 1,
+		URL:        u,
+	}).WithContext(ctx)
+
+	var out R
+	rsp, err := c.cli.Do(req)
+	if err != nil {
+		return out, err
+	}
+	defer rsp.Body.Close()
+
+	switch rsp.StatusCode {
+	case http.StatusOK:
+		// TODO
+		switch rsp.Header.Get("Content-Type") {
+		case "application/json":
+			if err := json.UnmarshalRead(rsp.Body, &out, jsonOpts); err != nil {
+				return out, api.WrapDecodingError(rsp, err)
+			}
+
+			return out, nil
+		default:
+			return out, api.NewErrUnknownContentType(rsp)
+		}
+	default:
+		return out, api.NewErrUnknownStatusCode(rsp)
+	}
 }
