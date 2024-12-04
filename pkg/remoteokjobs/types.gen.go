@@ -9,8 +9,8 @@ import (
 	"time"
 )
 
-// GetAPIOkJSONResponse defines a model
-type GetAPIOkJSONResponse []Job
+// Jobs defines a model
+type Jobs []Job
 
 // Job defines a model
 type Job struct {

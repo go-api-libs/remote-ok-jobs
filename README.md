@@ -37,12 +37,12 @@ func main() {
 	}
 
 	ctx := context.Background()
-	getAPIOkJSONResponse, err := c.GetAPI(ctx)
+	jobs, err := c.GetAPI(ctx)
 	if err != nil {
 		panic(err)
 	}
 
-	// Use getAPIOkJSONResponse array
+	// Use jobs array
 }
 
 ```

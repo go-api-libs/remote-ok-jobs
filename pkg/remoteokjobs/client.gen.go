@@ -40,8 +40,8 @@ func NewClient() (*Client, error) {
 // GetAPI defines an operation.
 //
 //	GET /api
-func (c *Client) GetAPI(ctx context.Context) (GetAPIOkJSONResponse, error) {
-	return GetAPI[GetAPIOkJSONResponse](ctx, c)
+func (c *Client) GetAPI(ctx context.Context) (Jobs, error) {
+	return GetAPI[Jobs](ctx, c)
 }
 
 // GetAPI defines an operation.

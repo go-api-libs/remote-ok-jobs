@@ -24,7 +24,7 @@
   },
   "components": {
     "schemas": {
-      "GetAPIOkJSONResponse": {
+      "Jobs": {
         "type": "array",
         "items": {
           "$ref": "#/components/schemas/Job"
@@ -133,7 +133,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/GetAPIOkJSONResponse"
+              "$ref": "#/components/schemas/Jobs"
             }
           }
         }
