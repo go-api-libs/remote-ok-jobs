@@ -37,18 +37,18 @@ func NewClient() (*Client, error) {
 	return &Client{cli: http.DefaultClient}, nil
 }
 
-// GetAPI defines an operation.
+// Get remote jobs
 //
 //	GET /api
-func (c *Client) GetAPI(ctx context.Context) (Jobs, error) {
-	return GetAPI[Jobs](ctx, c)
+func (c *Client) GetJobs(ctx context.Context) (Jobs, error) {
+	return GetJobs[Jobs](ctx, c)
 }
 
-// GetAPI defines an operation.
+// Get remote jobs
 // You can define a custom result to unmarshal the response into.
 //
 //	GET /api
-func GetAPI[R any](ctx context.Context, c *Client) (R, error) {
+func GetJobs[R any](ctx context.Context, c *Client) (R, error) {
 	u := baseURL.JoinPath("/api")
 	req := (&http.Request{
 		Header:     http.Header{},

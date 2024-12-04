@@ -37,7 +37,7 @@ func TestClient_Error(t *testing.T) {
 		testErr := errors.New("test error")
 		http.DefaultClient.Transport = &testRoundTripper{err: testErr}
 
-		if _, err := c.GetAPI(ctx); err == nil {
+		if _, err := c.GetJobs(ctx); err == nil {
 			t.Fatal("expected error")
 		} else if !errors.Is(err, testErr) {
 			t.Fatalf("want: %v, got: %v", testErr, err)
@@ -47,11 +47,11 @@ func TestClient_Error(t *testing.T) {
 	t.Run("Unmarshal", func(t *testing.T) {
 		errDecode := &api.DecodingError{}
 
-		t.Run("GetAPI", func(t *testing.T) {
+		t.Run("GetJobs", func(t *testing.T) {
 			// unknown status code
 			http.DefaultClient.Transport = &testRoundTripper{rsp: &http.Response{StatusCode: http.StatusTeapot}}
 
-			if _, err := c.GetAPI(ctx); err == nil {
+			if _, err := c.GetJobs(ctx); err == nil {
 				t.Fatal("expected error")
 			} else if !errors.Is(err, api.ErrUnknownStatusCode) {
 				t.Fatalf("want: %v, got: %v", api.ErrUnknownStatusCode, err)
@@ -63,7 +63,7 @@ func TestClient_Error(t *testing.T) {
 				StatusCode: http.StatusOK,
 			}}
 
-			if _, err := c.GetAPI(ctx); err == nil {
+			if _, err := c.GetJobs(ctx); err == nil {
 				t.Fatal("expected error")
 			} else if !errors.Is(err, api.ErrUnknownContentType) {
 				t.Fatalf("want: %v, got: %v", api.ErrUnknownContentType, err)
@@ -76,7 +76,7 @@ func TestClient_Error(t *testing.T) {
 				StatusCode: http.StatusOK,
 			}}
 
-			if _, err := c.GetAPI(ctx); err == nil {
+			if _, err := c.GetJobs(ctx); err == nil {
 				t.Fatal("expected error")
 			} else if !errors.As(err, &errDecode) {
 				t.Fatalf("want: %v, got: %v", errDecode, err)

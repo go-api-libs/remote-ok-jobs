@@ -19,7 +19,7 @@ go get github.com/go-api-libs/remote-ok-jobs/pkg/remoteokjobs
 
 ## Usage
 
-### Example 1: 
+### Example 1: Get remote jobs
 
 ```go
 package main
@@ -37,7 +37,7 @@ func main() {
 	}
 
 	ctx := context.Background()
-	jobs, err := c.GetAPI(ctx)
+	jobs, err := c.GetJobs(ctx)
 	if err != nil {
 		panic(err)
 	}

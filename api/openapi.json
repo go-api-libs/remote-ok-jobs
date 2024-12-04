@@ -13,7 +13,8 @@
   "paths": {
     "/api": {
       "get": {
-        "operationId": "GetAPI",
+        "summary": "Get remote jobs",
+        "operationId": "GetJobs",
         "responses": {
           "200": {
             "$ref": "#/components/responses/JobsResponse"
