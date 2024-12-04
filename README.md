@@ -19,7 +19,7 @@ go get github.com/go-api-libs/remote-ok-jobs/pkg/remoteokjobs
 
 ## Usage
 
-### Example 1: Get remote jobs
+### Example 1: Get Remote Jobs
 
 ```go
 package main

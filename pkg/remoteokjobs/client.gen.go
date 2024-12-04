@@ -37,14 +37,14 @@ func NewClient() (*Client, error) {
 	return &Client{cli: http.DefaultClient}, nil
 }
 
-// Get remote jobs
+// Get Remote Jobs
 //
 //	GET /api
 func (c *Client) GetJobs(ctx context.Context) (Jobs, error) {
 	return GetJobs[Jobs](ctx, c)
 }
 
-// Get remote jobs
+// Get Remote Jobs
 // You can define a custom result to unmarshal the response into.
 //
 //	GET /api

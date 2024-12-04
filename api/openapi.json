@@ -13,7 +13,7 @@
   "paths": {
     "/api": {
       "get": {
-        "summary": "Get remote jobs",
+        "summary": "Get Remote Jobs",
         "operationId": "GetJobs",
         "responses": {
           "200": {
