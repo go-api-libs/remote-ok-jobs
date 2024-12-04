@@ -7,7 +7,7 @@
 ![API Health](https://img.shields.io/badge/API_health-70%25-yellowgreen)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-Remote OK is the #1 remote-only jobs board on the web. It has over 30,000+ remote job listings, adding new ones every day. With this API, now you can build apps with our data feed which covers 80% of remote jobs on the web. ([Source](https://www.remoteok.com))
+Remote OK is the #1 remote-only jobs board on the web. It has over 30,000+ remote job listings, adding new ones every day. With this API, now you can build apps with our data feed which covers 80% of remote jobs on the web. ([Source](https://freepublicapis.com/remote-ok-jobs-api))
 
 ## Installation
 
