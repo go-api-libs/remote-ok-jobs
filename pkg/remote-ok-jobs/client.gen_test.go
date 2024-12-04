@@ -13,7 +13,7 @@ import (
 	"testing"
 
 	"github.com/go-api-libs/api"
-	"gopkg.in/dnaeon/go-vcr.v3/recorder"
+	"github.com/go-api-libs/remote-ok-jobs/pkg/remoteokjobs"
 )
 
 type testRoundTripper struct {
@@ -82,44 +82,5 @@ func TestClient_Error(t *testing.T) {
 				t.Fatalf("want: %v, got: %v", errDecode, err)
 			}
 		})
-	})
-}
-
-func replay(t *testing.T, cassette string) {
-	t.Helper()
-
-	r, err := recorder.NewWithOptions(&recorder.Options{
-		CassetteName:       cassette,
-		Mode:               recorder.ModeReplayOnly,
-		RealTransport:      http.DefaultTransport,
-		SkipRequestLatency: true,
-	})
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Cleanup(func() {
-		_ = r.Stop()
-	})
-
-	http.DefaultClient.Transport = r
-}
-
-func TestClient_VCR(t *testing.T) {
-	ctx := context.Background()
-
-	c, err := remoteokjobs.NewClient()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	t.Run("2024-12-04", func(t *testing.T) {
-		replay(t, "../../pkg/remote-ok-jobs/vcr/2024-12-04")
-
-		res, err := c.GetAPI(ctx)
-		if err != nil {
-			t.Fatal(err)
-		} else if res == nil {
-			t.Fatal("result is nil")
-		}
 	})
 }

@@ -1,5 +1,5 @@
 # 🆗 Remote OK Jobs API
-[![Go Reference](https://pkg.go.dev/badge/github.com/go-api-libs/remote-ok-jobs.svg)](https://pkg.go.dev/github.com/go-api-libs/remote-ok-jobs/pkg/remote-ok-jobs)
+[![Go Reference](https://pkg.go.dev/badge/github.com/go-api-libs/remote-ok-jobs.svg)](https://pkg.go.dev/github.com/go-api-libs/remote-ok-jobs/pkg/remoteokjobs)
 [![Official Documentation](https://img.shields.io/badge/docs-API-blue)](https://www.remoteok.com)
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.1-blue)](/api/openapi.json)
 [![Go Report Card](https://goreportcard.com/badge/github.com/go-api-libs/remote-ok-jobs)](https://goreportcard.com/report/github.com/go-api-libs/remote-ok-jobs)
@@ -14,7 +14,7 @@ Remote OK is the #1 remote-only jobs board on the web. It has over 30,000+ remot
 To install the library, use the following command:
 
 ```shell
-go get github.com/go-api-libs/remote-ok-jobs/pkg/remote-ok-jobs
+go get github.com/go-api-libs/remote-ok-jobs/pkg/remoteokjobs
 ```
 
 ## Usage
@@ -26,10 +26,12 @@ package main
 
 import (
 	"context"
+
+	"github.com/go-api-libs/remote-ok-jobs/pkg/remoteokjobs"
 )
 
 func main() {
-	c, err := remote - ok - jobs.NewClient()
+	c, err := remoteokjobs.NewClient()
 	if err != nil {
 		panic(err)
 	}
@@ -47,7 +49,7 @@ func main() {
 
 ## Additional Information
 
-- [**Go Reference**](https://pkg.go.dev/github.com/go-api-libs/remote-ok-jobs/pkg/remote-ok-jobs): The Go reference documentation for the client package.
+- [**Go Reference**](https://pkg.go.dev/github.com/go-api-libs/remote-ok-jobs/pkg/remoteokjobs): The Go reference documentation for the client package.
 - [**Official Documentation**](https://www.remoteok.com): The official API documentation.
 - [**OpenAPI Specification**](./api/openapi.json): The OpenAPI 3.1.0 specification.
 - [**Go Report Card**](https://goreportcard.com/report/github.com/go-api-libs/remote-ok-jobs): Check the code quality report.
