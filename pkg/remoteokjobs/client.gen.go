@@ -69,7 +69,7 @@ func GetAPI[R any](ctx context.Context, c *Client) (R, error) {
 
 	switch rsp.StatusCode {
 	case http.StatusOK:
-		// TODO
+		// Returns a list of remote jobs
 		switch rsp.Header.Get("Content-Type") {
 		case "application/json":
 			if err := json.UnmarshalRead(rsp.Body, &out, jsonOpts); err != nil {

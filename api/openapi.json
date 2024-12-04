@@ -16,7 +16,7 @@
         "operationId": "GetAPI",
         "responses": {
           "200": {
-            "$ref": "#/components/responses/GetAPIOkResponse"
+            "$ref": "#/components/responses/JobsResponse"
           }
         }
       }
@@ -128,8 +128,8 @@
       }
     },
     "responses": {
-      "GetAPIOkResponse": {
-        "description": "TODO",
+      "JobsResponse": {
+        "description": "Returns a list of remote jobs",
         "content": {
           "application/json": {
             "schema": {
