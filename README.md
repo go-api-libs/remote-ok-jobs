@@ -3,7 +3,7 @@
 [![Official Documentation](https://img.shields.io/badge/docs-API-blue)](https://www.remoteok.com)
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.1-blue)](/api/openapi.json)
 [![Go Report Card](https://goreportcard.com/badge/github.com/go-api-libs/remote-ok-jobs)](https://goreportcard.com/report/github.com/go-api-libs/remote-ok-jobs)
-![Code Coverage](https://img.shields.io/badge/coverage-88%25-green)
+![Code Coverage](https://img.shields.io/badge/coverage-94%25-brightgreen)
 ![API Health](https://img.shields.io/badge/API_health-70%25-yellowgreen)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
