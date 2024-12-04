@@ -27,10 +27,10 @@
       "GetAPIOkJSONResponse": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/GetAPIOkJSONResponseItems"
+          "$ref": "#/components/schemas/Job"
         }
       },
-      "GetAPIOkJSONResponseItems": {
+      "Job": {
         "type": "object",
         "properties": {
           "last_updated": {

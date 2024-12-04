@@ -10,10 +10,10 @@ import (
 )
 
 // GetAPIOkJSONResponse defines a model
-type GetAPIOkJSONResponse []GetAPIOkJSONResponseItems
+type GetAPIOkJSONResponse []Job
 
-// GetAPIOkJSONResponseItems defines a model
-type GetAPIOkJSONResponseItems struct {
+// Job defines a model
+type Job struct {
 	LastUpdated int        `json:"last_updated"`
 	Legal       string     `json:"legal"`
 	Slug        *string    `json:"slug"`
