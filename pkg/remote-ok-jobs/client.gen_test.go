@@ -9,7 +9,6 @@ import (
 	"errors"
 	"io"
 	"net/http"
-	remoteokjobs "remoteokjobs"
 	"strings"
 	"testing"
 
