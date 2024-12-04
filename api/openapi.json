@@ -1,0 +1,20 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Remote OK Jobs API",
+    "description": "Remote OK is the #1 remote-only jobs board on the web. It has over 30,000+ remote job listings, adding new ones every day. With this API, now you can build apps with our data feed which covers 80% of remote jobs on the web.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "TODO"
+    }
+  ],
+  "paths": {
+    "/": {}
+  },
+  "externalDocs": {
+    "description": "API documentation",
+    "url": "https://www.remoteok.com"
+  }
+}

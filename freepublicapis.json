@@ -1,0 +1,10 @@
+{
+  "id": 337,
+  "emoji": "🆗",
+  "title": "Remote OK Jobs API",
+  "description": "Remote OK is the #1 remote-only jobs board on the web. It has over 30,000+ remote job listings, adding new ones every day. With this API, now you can build apps with our data feed which covers 80% of remote jobs on the web.",
+  "documentation": "https://www.remoteok.com",
+  "methods": 1,
+  "health": 70,
+  "source": "https://freepublicapis.com/remote-ok-jobs-api"
+}

@@ -1,0 +1,15 @@
+# github.com/go-json-experiment/json v0.0.0-20241127185351-9802db03f36a
+## explicit; go 1.23
+github.com/go-json-experiment/json
+github.com/go-json-experiment/json/internal
+github.com/go-json-experiment/json/internal/jsonflags
+github.com/go-json-experiment/json/internal/jsonopts
+github.com/go-json-experiment/json/internal/jsonwire
+github.com/go-json-experiment/json/jsontext
+# gopkg.in/dnaeon/go-vcr.v3 v3.2.0
+## explicit; go 1.19
+gopkg.in/dnaeon/go-vcr.v3/cassette
+gopkg.in/dnaeon/go-vcr.v3/recorder
+# gopkg.in/yaml.v3 v3.0.1
+## explicit
+gopkg.in/yaml.v3
