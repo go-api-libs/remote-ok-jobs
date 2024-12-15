@@ -8,10 +8,15 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/MarkRosemaker/jsonutil"
 	"github.com/go-api-libs/api"
 	"github.com/go-json-experiment/json"
+)
+
+const (
+	userAgent = "RemoteOkJobsGoAPILibrary/1.0.0 (https://github.com/go-api-libs/remote-ok-jobs)"
 )
 
 var (
@@ -52,7 +57,7 @@ func (c *Client) GetJobs(ctx context.Context) (Jobs, error) {
 func GetJobs[R any](ctx context.Context, c *Client) (R, error) {
 	u := baseURL.JoinPath("/api")
 	req := (&http.Request{
-		Header:     http.Header{},
+		Header:     http.Header{"User-Agent": []string{userAgent}},
 		Host:       u.Host,
 		Method:     http.MethodGet,
 		Proto:      "HTTP/1.1",
@@ -71,7 +76,7 @@ func GetJobs[R any](ctx context.Context, c *Client) (R, error) {
 	switch rsp.StatusCode {
 	case http.StatusOK:
 		// Returns a list of remote jobs
-		switch rsp.Header.Get("Content-Type") {
+		switch mt, _, _ := strings.Cut(rsp.Header.Get("Content-Type"), ";"); mt {
 		case "application/json":
 			if err := json.UnmarshalRead(rsp.Body, &out, jsonOpts); err != nil {
 				return out, api.WrapDecodingError(rsp, err)

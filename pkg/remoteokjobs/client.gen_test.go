@@ -5,6 +5,7 @@
 package remoteokjobs_test
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"io"
@@ -14,6 +15,7 @@ import (
 
 	"github.com/go-api-libs/api"
 	"github.com/go-api-libs/remote-ok-jobs/pkg/remoteokjobs"
+	"gopkg.in/dnaeon/go-vcr.v3/cassette"
 	"gopkg.in/dnaeon/go-vcr.v3/recorder"
 )
 
@@ -102,7 +104,46 @@ func replay(t *testing.T, cassette string) {
 		_ = r.Stop()
 	})
 
+	r.SetMatcher(matcher)
 	http.DefaultClient.Transport = r
+}
+
+func matcher(r *http.Request, i cassette.Request) bool {
+	if !cassette.DefaultMatcher(r, i) {
+		return false
+	}
+
+	return getBody(r) == i.Body
+}
+
+func getBody(r *http.Request) string {
+	if r.Body == nil {
+		return ""
+	}
+
+	if r.GetBody == nil {
+		b, err := io.ReadAll(r.Body)
+		if err != nil {
+			panic(err)
+		}
+
+		r.Body.Close()
+		r.Body = io.NopCloser(bytes.NewReader(b))
+		return string(b)
+	}
+
+	body, err := r.GetBody()
+	if err != nil {
+		panic(err)
+	}
+	defer body.Close()
+
+	b, err := io.ReadAll(body)
+	if err != nil {
+		panic(err)
+	}
+
+	return string(b)
 }
 
 func TestClient_VCR(t *testing.T) {

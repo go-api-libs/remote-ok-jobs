@@ -14,23 +14,23 @@ type Jobs []Job
 
 // Job defines a model
 type Job struct {
-	LastUpdated int        `json:"last_updated"`
-	Legal       string     `json:"legal"`
-	Slug        *string    `json:"slug"`
-	ID          *string    `json:"id"`
-	Epoch       *int       `json:"epoch"`
-	Date        *time.Time `json:"date"`
-	Company     *string    `json:"company"`
-	CompanyLogo *url.URL   `json:"company_logo"`
-	Position    *string    `json:"position"`
-	Tags        *[]string  `json:"tags"`
-	Description *string    `json:"description"`
-	Location    *string    `json:"location"`
-	SalaryMin   *int       `json:"salary_min"`
-	SalaryMax   *int       `json:"salary_max"`
-	ApplyURL    *url.URL   `json:"apply_url"`
-	Logo        *url.URL   `json:"logo"`
-	URL         *url.URL   `json:"url"`
-	Original    *bool      `json:"original"`
-	Verified    *bool      `json:"verified"`
+	LastUpdated int        `json:"last_updated,omitzero"`
+	Legal       string     `json:"legal,omitzero"`
+	Slug        *string    `json:"slug,omitempty"`
+	ID          *string    `json:"id,omitempty"`
+	Epoch       *int       `json:"epoch,omitempty"`
+	Date        *time.Time `json:"date,omitempty"`
+	Company     *string    `json:"company,omitempty"`
+	CompanyLogo *url.URL   `json:"company_logo,omitempty"`
+	Position    *string    `json:"position,omitempty"`
+	Tags        []string   `json:"tags,omitempty"`
+	Description *string    `json:"description,omitempty"`
+	Location    *string    `json:"location,omitempty"`
+	SalaryMin   *int       `json:"salary_min,omitempty"`
+	SalaryMax   *int       `json:"salary_max,omitempty"`
+	ApplyURL    *url.URL   `json:"apply_url,omitempty"`
+	Logo        *url.URL   `json:"logo,omitempty"`
+	URL         *url.URL   `json:"url,omitempty"`
+	Original    *bool      `json:"original,omitempty"`
+	Verified    *bool      `json:"verified,omitempty"`
 }
