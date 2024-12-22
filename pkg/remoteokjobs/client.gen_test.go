@@ -166,7 +166,7 @@ func TestClient_VCR(t *testing.T) {
 	}
 
 	t.Run("2024-12-04", func(t *testing.T) {
-		replay(t, "../../pkg/remoteokjobs/vcr/2024-12-04")
+		replay(t, "vcr/2024-12-04")
 
 		res, err := c.GetJobs(ctx)
 		if err != nil {
