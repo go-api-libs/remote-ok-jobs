@@ -42,7 +42,7 @@ func main() {
 		panic(err)
 	}
 
-	// Use jobs array
+	// Use jobs slice
 }
 
 ```

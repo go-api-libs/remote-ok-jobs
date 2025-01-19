@@ -12,6 +12,7 @@ import (
 	"maps"
 	"net/http"
 	"net/url"
+	"path"
 	"slices"
 	"strings"
 	"testing"
@@ -121,7 +122,7 @@ func matcher(r *http.Request, i cassette.Request) bool {
 		r.URL.Scheme == u.Scheme &&
 		r.URL.Opaque == u.Opaque &&
 		r.URL.Host == u.Host &&
-		r.URL.Path == u.Path &&
+		path.Clean("/"+r.URL.Path) == path.Clean("/"+u.Path) &&
 		r.URL.Fragment == u.Fragment &&
 		maps.EqualFunc(r.URL.Query(), u.Query(), slices.Equal) &&
 		getBody(r) == i.Body

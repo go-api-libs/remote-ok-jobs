@@ -94,8 +94,8 @@ func NewEncoder(w io.Writer, opts ...Options) *Encoder {
 
 // Reset resets an encoder such that it is writing afresh to w and
 // configured with the provided options. Reset must not be called on
-// a Encoder passed to the [encoding/json/v2.MarshalerV2.MarshalJSONV2] method
-// or the [encoding/json/v2.MarshalFuncV2] function.
+// a Encoder passed to the [encoding/json/v2.MarshalerTo.MarshalJSONTo] method
+// or the [encoding/json/v2.MarshalToFunc] function.
 func (e *Encoder) Reset(w io.Writer, opts ...Options) {
 	switch {
 	case e == nil:
@@ -103,7 +103,7 @@ func (e *Encoder) Reset(w io.Writer, opts ...Options) {
 	case w == nil:
 		panic("jsontext: invalid nil io.Writer")
 	case e.s.Flags.Get(jsonflags.WithinArshalCall):
-		panic("jsontext: cannot reset Encoder passed to json.MarshalerV2")
+		panic("jsontext: cannot reset Encoder passed to json.MarshalerTo")
 	}
 	e.s.reset(nil, w, opts...)
 }
@@ -209,17 +209,7 @@ func (e *encoderState) Flush() error {
 
 	return nil
 }
-
-// injectSyntacticErrorWithPosition wraps a SyntacticError with the position,
-// otherwise it returns the error as is.
-// It takes a position relative to the start of the start of e.buf.
-func (e *encodeBuffer) injectSyntacticErrorWithPosition(err error, pos int) error {
-	if serr, ok := err.(*SyntacticError); ok {
-		return serr.withOffset(e.baseOffset + int64(pos))
-	}
-	return err
-}
-
+func (d *encodeBuffer) offsetAt(pos int) int64   { return d.baseOffset + int64(pos) }
 func (e *encodeBuffer) previousOffsetEnd() int64 { return e.baseOffset + int64(len(e.Buf)) }
 func (e *encodeBuffer) unflushedBuffer() []byte  { return e.Buf }
 
@@ -374,7 +364,7 @@ func (e *encoderState) WriteToken(t Token) error {
 					break
 				}
 				if e.Tokens.Last.isActiveNamespace() && !e.Namespaces.Last().insertQuoted(b[pos:], false) {
-					err = newDuplicateNameError(b[pos:])
+					err = wrapWithObjectName(ErrDuplicateName, b[pos:])
 					break
 				}
 			}
@@ -411,10 +401,10 @@ func (e *encoderState) WriteToken(t Token) error {
 		b = append(b, ']')
 		err = e.Tokens.popArray()
 	default:
-		err = &SyntacticError{str: "invalid json.Token"}
+		err = errInvalidToken
 	}
 	if err != nil {
-		return e.injectSyntacticErrorWithPosition(err, pos)
+		return wrapSyntacticError(e, err, pos, +1)
 	}
 
 	// Finish off the buffer and store it back into e.
@@ -464,7 +454,7 @@ func (e *encoderState) AppendRaw(k Kind, safeASCII bool, appendFn func([]byte) (
 			b, err = jsonwire.AppendQuote(b[:pos], string(b2), &e.Flags)
 			e.unusedCache = b2[:0]
 			if err != nil {
-				return e.injectSyntacticErrorWithPosition(err, pos)
+				return wrapSyntacticError(e, err, pos, +1)
 			}
 		}
 
@@ -472,24 +462,24 @@ func (e *encoderState) AppendRaw(k Kind, safeASCII bool, appendFn func([]byte) (
 		if e.Tokens.Last.NeedObjectName() {
 			if !e.Flags.Get(jsonflags.AllowDuplicateNames) {
 				if !e.Tokens.Last.isValidNamespace() {
-					return errInvalidNamespace
+					return wrapSyntacticError(e, err, pos, +1)
 				}
 				if e.Tokens.Last.isActiveNamespace() && !e.Namespaces.Last().insertQuoted(b[pos:], isVerbatim) {
-					err := newDuplicateNameError(b[pos:])
-					return e.injectSyntacticErrorWithPosition(err, pos)
+					err = wrapWithObjectName(ErrDuplicateName, b[pos:])
+					return wrapSyntacticError(e, err, pos, +1)
 				}
 			}
 			e.Names.ReplaceLastQuotedOffset(pos) // only replace if insertQuoted succeeds
 		}
 		if err := e.Tokens.appendString(); err != nil {
-			return e.injectSyntacticErrorWithPosition(err, pos)
+			return wrapSyntacticError(e, err, pos, +1)
 		}
 	case '0':
 		if b, err = appendFn(b); err != nil {
 			return err
 		}
 		if err := e.Tokens.appendNumber(); err != nil {
-			return e.injectSyntacticErrorWithPosition(err, pos)
+			return wrapSyntacticError(e, err, pos, +1)
 		}
 	default:
 		panic("BUG: invalid kind")
@@ -536,13 +526,13 @@ func (e *encoderState) WriteValue(v Value) error {
 	n += jsonwire.ConsumeWhitespace(v[n:])
 	b, m, err := e.reformatValue(b, v[n:], e.Tokens.Depth())
 	if err != nil {
-		return e.injectSyntacticErrorWithPosition(err, pos+n+m)
+		return wrapSyntacticError(e, err, pos+n+m, +1)
 	}
 	n += m
 	n += jsonwire.ConsumeWhitespace(v[n:])
 	if len(v) > n {
-		err = newInvalidCharacterError(v[n:], "after top-level value")
-		return e.injectSyntacticErrorWithPosition(err, pos+n)
+		err = jsonwire.NewInvalidCharacterError(v[n:], "after top-level value")
+		return wrapSyntacticError(e, err, pos+n, 0)
 	}
 
 	// Append the kind to the state machine.
@@ -557,7 +547,7 @@ func (e *encoderState) WriteValue(v Value) error {
 					break
 				}
 				if e.Tokens.Last.isActiveNamespace() && !e.Namespaces.Last().insertQuoted(b[pos:], false) {
-					err = newDuplicateNameError(b[pos:])
+					err = wrapWithObjectName(ErrDuplicateName, b[pos:])
 					break
 				}
 			}
@@ -582,7 +572,7 @@ func (e *encoderState) WriteValue(v Value) error {
 		}
 	}
 	if err != nil {
-		return e.injectSyntacticErrorWithPosition(err, pos)
+		return wrapSyntacticError(e, err, pos, +1)
 	}
 
 	// Finish off the buffer and store it back into e.
@@ -591,6 +581,32 @@ func (e *encoderState) WriteValue(v Value) error {
 		return e.Flush()
 	}
 	return nil
+}
+
+// CountNextDelimWhitespace counts the number of bytes of delimiter and
+// whitespace bytes assuming the upcoming token is a JSON value.
+// This method is used for error reporting at the semantic layer.
+func (e *encoderState) CountNextDelimWhitespace() (n int) {
+	const next = Kind('"') // arbitrary kind as next JSON value
+	delim := e.Tokens.needDelim(next)
+	if delim > 0 {
+		n += len(",") | len(":")
+	}
+	if delim == ':' {
+		if e.Flags.Get(jsonflags.SpaceAfterColon) {
+			n += len(" ")
+		}
+	} else {
+		if delim == ',' && e.Flags.Get(jsonflags.SpaceAfterComma) {
+			n += len(" ")
+		}
+		if e.Flags.Get(jsonflags.Multiline) {
+			if m := e.Tokens.NeedIndent(next); m > 0 {
+				n += len("\n") + len(e.IndentPrefix) + (m-1)*len(e.Indent)
+			}
+		}
+	}
+	return n
 }
 
 // appendWhitespace appends whitespace that immediately precedes the next token.
@@ -668,7 +684,7 @@ func (e *encoderState) reformatValue(dst []byte, src Value, depth int) ([]byte, 
 	case '[':
 		return e.reformatArray(dst, src, depth)
 	default:
-		return dst, 0, newInvalidCharacterError(src, "at start of value")
+		return dst, 0, jsonwire.NewInvalidCharacterError(src, "at start of value")
 	}
 }
 
@@ -716,7 +732,8 @@ func (e *encoderState) reformatObject(dst []byte, src Value, depth int) ([]byte,
 			return dst, n, io.ErrUnexpectedEOF
 		}
 		m := jsonwire.ConsumeSimpleString(src[n:])
-		if m > 0 {
+		isVerbatim := m > 0
+		if isVerbatim {
 			dst = append(dst, src[n:n+m]...)
 		} else {
 			dst, m, err = jsonwire.ReformatString(dst, src[n:], &e.Flags)
@@ -724,19 +741,20 @@ func (e *encoderState) reformatObject(dst []byte, src Value, depth int) ([]byte,
 				return dst, n + m, err
 			}
 		}
-		// TODO: Specify whether the name is verbatim or not.
-		if !e.Flags.Get(jsonflags.AllowDuplicateNames) && !names.insertQuoted(src[n:n+m], false) {
-			return dst, n, newDuplicateNameError(src[n : n+m])
+		quotedName := src[n : n+m]
+		if !e.Flags.Get(jsonflags.AllowDuplicateNames) && !names.insertQuoted(quotedName, isVerbatim) {
+			return dst, n, wrapWithObjectName(ErrDuplicateName, quotedName)
 		}
 		n += m
 
 		// Append colon.
 		n += jsonwire.ConsumeWhitespace(src[n:])
 		if uint(len(src)) <= uint(n) {
-			return dst, n, io.ErrUnexpectedEOF
+			return dst, n, wrapWithObjectName(io.ErrUnexpectedEOF, quotedName)
 		}
 		if src[n] != ':' {
-			return dst, n, newInvalidCharacterError(src[n:], "after object name (expecting ':')")
+			err = jsonwire.NewInvalidCharacterError(src[n:], "after object name (expecting ':')")
+			return dst, n, wrapWithObjectName(err, quotedName)
 		}
 		dst = append(dst, ':')
 		n += len(":")
@@ -747,11 +765,11 @@ func (e *encoderState) reformatObject(dst []byte, src Value, depth int) ([]byte,
 		// Append object value.
 		n += jsonwire.ConsumeWhitespace(src[n:])
 		if uint(len(src)) <= uint(n) {
-			return dst, n, io.ErrUnexpectedEOF
+			return dst, n, wrapWithObjectName(io.ErrUnexpectedEOF, quotedName)
 		}
 		dst, m, err = e.reformatValue(dst, src[n:], depth)
 		if err != nil {
-			return dst, n + m, err
+			return dst, n + m, wrapWithObjectName(err, quotedName)
 		}
 		n += m
 
@@ -776,7 +794,7 @@ func (e *encoderState) reformatObject(dst []byte, src Value, depth int) ([]byte,
 			n += len("}")
 			return dst, n, nil
 		default:
-			return dst, n, newInvalidCharacterError(src[n:], "after object value (expecting ',' or '}')")
+			return dst, n, jsonwire.NewInvalidCharacterError(src[n:], "after object value (expecting ',' or '}')")
 		}
 	}
 }
@@ -805,6 +823,7 @@ func (e *encoderState) reformatArray(dst []byte, src Value, depth int) ([]byte, 
 		return dst, n, nil
 	}
 
+	var idx int64
 	var err error
 	depth++
 	for {
@@ -821,7 +840,7 @@ func (e *encoderState) reformatArray(dst []byte, src Value, depth int) ([]byte, 
 		var m int
 		dst, m, err = e.reformatValue(dst, src[n:], depth)
 		if err != nil {
-			return dst, n + m, err
+			return dst, n + m, wrapWithArrayIndex(err, idx)
 		}
 		n += m
 
@@ -837,6 +856,7 @@ func (e *encoderState) reformatArray(dst []byte, src Value, depth int) ([]byte, 
 				dst = append(dst, ' ')
 			}
 			n += len(",")
+			idx++
 			continue
 		case ']':
 			if e.Flags.Get(jsonflags.Multiline) {
@@ -846,7 +866,7 @@ func (e *encoderState) reformatArray(dst []byte, src Value, depth int) ([]byte, 
 			n += len("]")
 			return dst, n, nil
 		default:
-			return dst, n, newInvalidCharacterError(src[n:], "after array value (expecting ',' or ']')")
+			return dst, n, jsonwire.NewInvalidCharacterError(src[n:], "after array value (expecting ',' or ']')")
 		}
 	}
 }
@@ -924,6 +944,10 @@ func (e *Encoder) StackIndex(i int) (Kind, int64) {
 // Object names are only present if [AllowDuplicateNames] is false, otherwise
 // object members are represented using their index within the object.
 func (e *Encoder) StackPointer() Pointer {
-	e.s.Names.copyQuotedBuffer(e.s.Buf)
-	return Pointer(e.s.appendStackPointer(nil))
+	return Pointer(e.s.AppendStackPointer(nil, -1))
+}
+
+func (e *encoderState) AppendStackPointer(b []byte, where int) []byte {
+	e.Names.copyQuotedBuffer(e.Buf)
+	return e.state.appendStackPointer(b, where)
 }
